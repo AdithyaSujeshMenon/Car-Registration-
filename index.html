@@ -3,16 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Car Registration</title>
+    <title>Pess Vehicle Registration Point</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h1>Car Registration</h1>
+        <img src="pess1.jpeg" />
+        <h2>Register Your Vehicle</h2>
+        
         <form id="carForm">
             <div class="form-group">
+                <label for="vehicleType">Vehicle Type:</label>
+                <select id="vehicleType" name="vehicleType" required>
+                    <option value="">Select Type</option>
+                    <option value="Motorcycle">Motorcycle</option>
+                    <option value="Car">Car</option>
+                    <option value="Truck">Truck</option>
+                    <option value="Van">Van</option>
+                </select>
+            </div>
+            <div class="form-group">
                 <label for="vehicleNumber">Vehicle Number:</label>
-                <input type="text" id="vehicleNumber" name="vehicleNumber" required placeholder="e.g., ABC1234" title="Vehicle number is required">
+                <input type="text" id="vehicleNumber" name="vehicleNumber" required placeholder="e.g., ABC1234">
             </div>
             <div class="form-group">
                 <label for="ownerName">Owner's Name (Optional):</label>
@@ -26,12 +38,56 @@
                 <label for="contactNumber">Contact Number (Optional):</label>
                 <input type="text" id="contactNumber" name="contactNumber" placeholder="e.g., +1234567890">
             </div>
-            <button type="submit" class="register-btn">Register Car</button>
+            <button type="submit" class="register-btn">Register Vehicle</button>
             <button type="button" id="clearAll" class="clear-btn">Clear All</button>
         </form>
-        
-        <h2>Registered Cars</h2>
-        <ul id="carList"></ul>
+
+        <div class="report-section">
+            <h2>View Reports</h2>
+            <div class="form-group">
+                <label for="startDate">Start Date:</label>
+                <input type="date" id="startDate" name="startDate">
+            </div>
+            <div class="form-group">
+                <label for="endDate">End Date:</label>
+                <input type="date" id="endDate" name="endDate">
+            </div>
+            <button id="viewReportBtn" class="report-btn">View Report</button>
+            <button id="todayReportBtn" class="report-btn">Today’s Registrations</button>
+        </div>
+
+        <h2>Registered Vehicles</h2>
+        <ul id="carList" class="scrollable"></ul>
+    </div>
+
+    <!-- Modal for Vehicle Details -->
+    <div id="carDetailsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeModal">&times;</span>
+            <h2 id="modalVehicleNumber"></h2>
+            <div id="modalCarDetails"></div>
+            <button id="deleteModalBtn" class="delete-btn">Delete</button>
+        </div>
+    </div>
+
+    <!-- Modal for Report -->
+    <div id="reportModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeReportModal">&times;</span>
+            <h2>Report from <span id="reportDateRange"></span></h2>
+            <ul id="reportCarList" class="scrollable"></ul>
+            <button id="closeReportList" class="close-btn">Close</button>
+        </div>
+    </div>
+
+    <!-- Modal for Today's Registrations -->
+    <div id="todayModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeTodayModal">&times;</span>
+            <h2>Today's Registrations</h2>
+            <ul id="todayCarList" class="scrollable"></ul>
+            <button id="closeTodayList" class="close-btn">Close</button>
+        </div>
     </div>
 
     <script src="script.js"></script>
