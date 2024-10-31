@@ -11,21 +11,23 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-color: #f0f4f8;
+    background-color: #e8f0fe;
 }
 
 .container {
-    width: 400px;
+    width: 450px;
     padding: 20px;
     background-color: #ffffff;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
     border-radius: 8px;
     text-align: center;
+    animation: fadeIn 0.6s ease-in-out;
 }
 
 h1, h2 {
     color: #333;
     margin-bottom: 20px;
+    font-weight: bold;
 }
 
 .form-group {
@@ -36,31 +38,51 @@ h1, h2 {
 label {
     font-weight: bold;
     display: block;
-    color: #444;
+    color: #555;
 }
 
 input {
     width: 100%;
     padding: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid #ddd;
     border-radius: 4px;
     margin-top: 5px;
+    transition: border-color 0.2s;
+}
+
+input:focus {
+    border-color: #1e90ff;
+    outline: none;
+}
+
+.register-btn, .clear-btn {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    transition: background-color 0.3s;
 }
 
 .register-btn {
-    width: 100%;
-    padding: 12px;
     background-color: #28a745;
     color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: bold;
+}
+
+.clear-btn {
+    background-color: #dc3545;
+    color: white;
 }
 
 .register-btn:hover {
     background-color: #218838;
+}
+
+.clear-btn:hover {
+    background-color: #c82333;
 }
 
 /* List Styles */
@@ -68,6 +90,7 @@ ul {
     list-style-type: none;
     padding: 0;
     margin-top: 20px;
+    text-align: left;
 }
 
 li {
@@ -79,10 +102,11 @@ li {
     border: 1px solid #ddd;
     margin-bottom: 10px;
     border-radius: 4px;
+    animation: fadeIn 0.3s ease-in-out;
 }
 
 .car-info {
-    text-align: left;
+    max-width: 80%;
 }
 
 .delete-btn {
@@ -93,8 +117,15 @@ li {
     border-radius: 4px;
     cursor: pointer;
     font-size: 14px;
+    transition: background-color 0.3s;
 }
 
 .delete-btn:hover {
     background-color: #c82333;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
