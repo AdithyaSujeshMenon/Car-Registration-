@@ -1,21 +1,33 @@
 document.addEventListener('DOMContentLoaded', () => {
     const carForm = document.getElementById('carForm');
     const carList = document.getElementById('carList');
+    const clearAllBtn = document.getElementById('clearAll');
 
-    // Load registered cars from local storage when the page loads
+    // Load registered cars from local storage
     loadRegisteredCars();
 
     carForm.addEventListener('submit', function(event) {
         event.preventDefault();
         const vehicleNumber = document.getElementById('vehicleNumber').value.trim();
         const ownerName = document.getElementById('ownerName').value.trim();
+        const carModel = document.getElementById('carModel').value.trim();
+        const contactNumber = document.getElementById('contactNumber').value.trim();
         const dateTime = new Date().toLocaleString();
 
-        if (vehicleNumber && ownerName) {
-            const car = { vehicleNumber, ownerName, dateTime };
+        if (vehicleNumber) {
+            const car = { vehicleNumber, ownerName, carModel, contactNumber, dateTime };
             saveCarToLocalStorage(car);
             displayCar(car);
             carForm.reset();
+        } else {
+            alert("Vehicle number is required.");
+        }
+    });
+
+    clearAllBtn.addEventListener('click', () => {
+        if (confirm("Are you sure you want to clear all registrations?")) {
+            localStorage.removeItem('registeredCars');
+            carList.innerHTML = '';
         }
     });
 
@@ -34,7 +46,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const listItem = document.createElement('li');
         const carInfo = document.createElement('div');
         carInfo.classList.add('car-info');
-        carInfo.textContent = `Vehicle: ${car.vehicleNumber}, Owner: ${car.ownerName}, Registered on: ${car.dateTime}`;
+
+        carInfo.innerHTML = `
+            <strong>Vehicle:</strong> ${car.vehicleNumber} <br>
+            <strong>Owner:</strong> ${car.ownerName || "N/A"} <br>
+            <strong>Model:</strong> ${car.carModel || "N/A"} <br>
+            <strong>Contact:</strong> ${car.contactNumber || "N/A"} <br>
+            <small><em>Registered on:</em> ${car.dateTime}</small>
+        `;
 
         const deleteBtn = document.createElement('button');
         deleteBtn.textContent = 'Delete';
