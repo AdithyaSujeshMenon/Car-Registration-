@@ -1,4 +1,4 @@
-/* General Styles */
+/* General Reset */
 * {
     margin: 0;
     padding: 0;
@@ -7,27 +7,30 @@
 }
 
 body {
+    min-height: 100vh;
     display: flex;
     justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+    align-items: flex-start;
     background-color: #e8f0fe;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
 }
 
 .container {
-    width: 450px;
+    width: 100%;
+    max-width: 600px;
     padding: 20px;
     background-color: #ffffff;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
     border-radius: 8px;
+    margin-top: 20px;
     text-align: center;
-    animation: fadeIn 0.6s ease-in-out;
 }
 
 h1, h2 {
     color: #333;
-    margin-bottom: 20px;
     font-weight: bold;
+    margin-bottom: 15px;
 }
 
 .form-group {
@@ -37,95 +40,127 @@ h1, h2 {
 
 label {
     font-weight: bold;
-    display: block;
     color: #555;
 }
 
-input {
+input, select {
     width: 100%;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
     margin-top: 5px;
-    transition: border-color 0.2s;
 }
 
-input:focus {
-    border-color: #1e90ff;
-    outline: none;
-}
 
-.register-btn, .clear-btn {
+
+.register-btn, .clear-btn, .report-btn {
     width: 100%;
     padding: 12px;
-    margin-top: 10px;
     font-size: 16px;
     font-weight: bold;
     cursor: pointer;
     border: none;
     border-radius: 4px;
-    transition: background-color 0.3s;
+    margin-top: 10px;
 }
 
-.register-btn {
-    background-color: #28a745;
-    color: white;
+.register-btn { background-color: #28a745; color: white; }
+.clear-btn { background-color: #dc3545; color: white; }
+.report-btn { background-color: #007bff; color: white; }
+
+.report-section {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
 }
 
-.clear-btn {
-    background-color: #dc3545;
-    color: white;
-}
-
-.register-btn:hover {
-    background-color: #218838;
-}
-
-.clear-btn:hover {
-    background-color: #c82333;
-}
-
-/* List Styles */
 ul {
     list-style-type: none;
     padding: 0;
     margin-top: 20px;
-    text-align: left;
+}
+
+.scrollable {
+    max-height: 50vh;
+    overflow-y: auto;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+    margin-bottom: 20px;
 }
 
 li {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px;
-    background-color: #f9f9f9;
+    padding: 10px;
+    background-color: #fff;
     border: 1px solid #ddd;
-    margin-bottom: 10px;
     border-radius: 4px;
-    animation: fadeIn 0.3s ease-in-out;
+    margin-bottom: 10px;
+    cursor: pointer;
 }
 
-.car-info {
-    max-width: 80%;
+.car-details {
+    display: none;
+    margin-top: 5px;
+    color: #555;
+    font-size: 0.9em;
+    background-color: #f1f1f1;
+    padding: 10px;
+    border-radius: 4px;
 }
 
-.delete-btn {
-    padding: 6px 10px;
-    background-color: #dc3545;
+.car-details.active { display: block; }
+
+.close-btn, .delete-btn {
+    margin-top: 10px;
+    padding: 5px 10px;
+    font-size: 0.9em;
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.3s;
 }
 
-.delete-btn:hover {
-    background-color: #c82333;
+.close-btn { background-color: #6c757d; }
+.delete-btn { background-color: #dc3545; }
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
 }
 
-/* Animations */
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.close-modal {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-modal:hover,
+.close-modal:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
 }
