@@ -94,6 +94,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function renderVehicleList() {
         carList.innerHTML = "";
+
+        vehicles.sort((a, b) => new Date(b.date) - new Date(a.date));
+        
         const start = (currentPage - 1) * itemsPerPage;
         const end = start + itemsPerPage;
         const currentVehicles = vehicles.slice(start, end);
