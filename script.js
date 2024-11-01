@@ -207,10 +207,10 @@ document.addEventListener("DOMContentLoaded", () => {
         renderVehicleList();
 
         // Show registration success message based on owner's name
-        if (ownerName) {
-            alert(`Hi ${ownerName}, your vehicle is registered successfully.`);
+        if (ownerName, vehicleNumber, vehicleType) {
+            alert(`Hi ${ownerName}, your ${vehicleType} ${vehicleNumber} is registered successfully.`);
         } else {
-            alert("Hey there, your vehicle is registered successfully.");
+            alert(`Hey there, your ${vehicleType} ${vehicleNumber} is registered successfully.`);
         }
     }
 
