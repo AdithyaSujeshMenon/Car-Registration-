@@ -1,146 +1,253 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const carForm = document.getElementById('carForm');
-    const carList = document.getElementById('carList');
-    const clearAllBtn = document.getElementById('clearAll');
-    const viewReportBtn = document.getElementById('viewReportBtn');
-    const todayReportBtn = document.getElementById('todayReportBtn');
-    const startDate = document.getElementById('startDate');
-    const endDate = document.getElementById('endDate');
-    
+document.addEventListener("DOMContentLoaded", () => {
+    const carForm = document.getElementById("carForm");
+    const carList = document.getElementById("carList");
+    const viewReportBtn = document.getElementById("viewReportBtn");
+    const todayReportBtn = document.getElementById("todayReportBtn");
+    const clearAllBtn = document.getElementById("clearAll");
+    const paginationControls = document.getElementById("paginationControls");
 
-    // Modal elements for vehicle details
-    const carDetailsModal = document.getElementById('carDetailsModal');
-    const modalVehicleNumber = document.getElementById('modalVehicleNumber');
-    const modalCarDetails = document.getElementById('modalCarDetails');
-    const closeModal = document.getElementById('closeModal');
-    const deleteModalBtn = document.getElementById('deleteModalBtn');
+    // Modal Elements
+    const carDetailsModal = document.getElementById("carDetailsModal");
+    const reportModal = document.getElementById("reportModal");
+    const todayModal = document.getElementById("todayModal");
+    const tempModal = document.getElementById("tempModal");
+    const closeModalBtn = document.getElementById("closeModal");
+    const closeReportModal = document.getElementById("closeReportModal");
+    const closeTodayModal = document.getElementById("closeTodayModal");
+    const closeTempModal = document.getElementById("closeTempModal");
 
-    // Modal elements for reports
-    const reportModal = document.getElementById('reportModal');
-    const reportCarList = document.getElementById('reportCarList');
-    const reportDateRange = document.getElementById('reportDateRange');
-    const closeReportModal = document.getElementById('closeReportModal');
+    const deleteModalBtn = document.getElementById("deleteModalBtn");
+    const modalVehicleNumber = document.getElementById("modalVehicleNumber");
+    const modalCarDetails = document.getElementById("modalCarDetails");
 
-    // Modal elements for today's registrations
-    const todayModal = document.getElementById('todayModal');
-    const todayCarList = document.getElementById('todayCarList');
-    const closeTodayModal = document.getElementById('closeTodayModal');
+    const startDateInput = document.getElementById("startDate");
+    const endDateInput = document.getElementById("endDate");
+    const reportDateRange = document.getElementById("reportDateRange");
+    const reportCarList = document.getElementById("reportCarList");
+    const todayCarList = document.getElementById("todayCarList");
 
-    // Load registered cars
-    loadRegisteredCars();
+    const itemsPerPage = 5;
+    let vehicles = JSON.parse(localStorage.getItem("vehicles")) || [];
+    let currentPage = 1;
+    let selectedVehicle = null;
 
-    carForm.addEventListener('submit', function (event) {
-        event.preventDefault(); // Prevent default form submission
+    // Authentication Elements
+    const authModal = document.getElementById("authModal");
+    const passcodeInput = document.getElementById("passcodeInput");
+    const submitPasscodeBtn = document.getElementById("submitPasscodeBtn");
+    const authMessage = document.getElementById("authMessage");
 
-        const vehicleType = document.getElementById('vehicleType').value;
-        const vehicleNumber = document.getElementById('vehicleNumber').value.trim();
-        const ownerName = document.getElementById('ownerName').value.trim();
-        const carModel = document.getElementById('carModel').value.trim();
-        const contactNumber = document.getElementById('contactNumber').value.trim();
-        const dateTime = new Date().toLocaleString();
+    function saveVehicles() {
+        localStorage.setItem("vehicles", JSON.stringify(vehicles));
+    }
 
-        // Validate required fields
-        if (!vehicleNumber || !vehicleType) {
-            alert("Vehicle type and number are required.");
-            return; // Exit the function if validation fails
+    function formatDate(date) {
+        // Format the date to YYYY-MM-DD HH:MM:SS
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+        const formattedDate = new Date(date).toLocaleString('en-CA', options); // Use 'en-CA' for the correct format
+        return formattedDate.replace(',', ''); // Remove comma
+    }
+
+    function renderPaginationControls() {
+        const totalPages = Math.ceil(vehicles.length / itemsPerPage);
+        paginationControls.innerHTML = "";
+
+        // Previous button
+        const prevBtn = document.createElement("button");
+        prevBtn.textContent = "<";
+        prevBtn.disabled = currentPage === 1;
+        prevBtn.classList.add("report-btn0");
+        prevBtn.addEventListener("click", () => {
+            if (currentPage > 1) {
+                currentPage--;
+                renderVehicleList();
+            }
+        });
+        paginationControls.appendChild(prevBtn);
+
+        // Page number buttons
+        for (let i = 1; i <= totalPages; i++) {
+            const pageBtn = document.createElement("button");
+            pageBtn.textContent = i;
+            pageBtn.classList.add("report-btn1");
+            if (i === currentPage) pageBtn.classList.add("active");
+            pageBtn.addEventListener("click", () => {
+                currentPage = i;
+                renderVehicleList();
+            });
+            paginationControls.appendChild(pageBtn);
         }
 
-        const car = { vehicleType, vehicleNumber, ownerName, carModel, contactNumber, dateTime };
-        saveCarToLocalStorage(car);
-        displayCar(car, carList); // Pass carList as the list element
-        carForm.reset(); // Reset form after successful submission
-    });
+        // Next button
+        const nextBtn = document.createElement("button");
+        nextBtn.textContent = ">";
+        nextBtn.disabled = currentPage === totalPages;
+        nextBtn.classList.add("report-btn0");
+        nextBtn.addEventListener("click", () => {
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderVehicleList();
+            }
+        });
+        paginationControls.appendChild(nextBtn);
+    }
 
-    clearAllBtn.addEventListener('click', () => {
-        if (confirm("Are you sure you want to clear all registrations?")) {
-            localStorage.removeItem('registeredCars');
-            carList.innerHTML = '';
+    function renderVehicleList() {
+        carList.innerHTML = "";
+        const start = (currentPage - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
+        const currentVehicles = vehicles.slice(start, end);
+
+        currentVehicles.forEach(vehicle => {
+            const li = document.createElement("li");
+            li.textContent = `${vehicle.vehicleNumber} - ${vehicle.date}`;
+            li.addEventListener("click", () => showVehicleDetails(vehicle));
+            carList.appendChild(li);
+        });
+
+        renderPaginationControls();
+    }
+
+    function showVehicleDetails(vehicle) {
+        selectedVehicle = vehicle;
+        authModal.style.display = "block"; // Show authentication modal
+    }
+
+    function authenticate(action) {
+        const passcode = passcodeInput.value;
+        if (passcode === '000000') {
+            alert('Authentication successful!');
+            authMessage.style.display = "none"; // Hide any previous error message
+            passcodeInput.value = ""; // Clear the input
+
+            if (action === "viewDetails") {
+                showDetails();
+            }
+            authModal.style.display = "none"; // Close the authentication modal
+        } else {
+            authMessage.style.display = "block"; // Show error message
         }
-    });
+    }
 
-    viewReportBtn.addEventListener('click', () => {
-        const start = new Date(startDate.value);
-        const end = new Date(endDate.value);
-        if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+    function showDetails() {
+        modalVehicleNumber.textContent = selectedVehicle.vehicleNumber;
+        modalCarDetails.innerHTML = `
+            <p>Type: ${selectedVehicle.vehicleType}</p>
+            <p>Owner: ${selectedVehicle.ownerName || "N/A"}</p>
+            <p>Model: ${selectedVehicle.carModel || "N/A"}</p>
+            <p>Contact: ${selectedVehicle.contactNumber || "N/A"}</p>
+            <p>Date: ${selectedVehicle.date}</p>
+        `;
+        carDetailsModal.style.display = "block";
+    }
+
+    function viewReport() {
+        const startDate = new Date(startDateInput.value);
+        const endDate = new Date(endDateInput.value);
+
+        if (startDate && endDate) {
+            // Set time to midnight for accurate comparisons
+            startDate.setHours(0, 0, 0, 0);
+            endDate.setHours(23, 59, 59, 999);
+
+            reportCarList.innerHTML = "";
+
+            const reportVehicles = vehicles.filter(vehicle => {
+                const vehicleDate = new Date(vehicle.date); // Use the stored date format
+                return vehicleDate >= startDate && vehicleDate <= endDate;
+            });
+
+            reportVehicles.forEach(vehicle => {
+                const li = document.createElement("li");
+                li.textContent = `${vehicle.vehicleNumber} - ${vehicle.date}`;
+                li.addEventListener("click", () => showVehicleDetails(vehicle));
+                reportCarList.appendChild(li);
+            });
+
+            reportDateRange.textContent = `${startDateInput.value} to ${endDateInput.value}`;
+            reportModal.style.display = "block";
+        } else {
             alert("Please select both start and end dates.");
-            return;
         }
-        reportDateRange.textContent = `${start.toDateString()} to ${end.toDateString()}`;
-        loadRegisteredCars(car => {
-            const carDate = new Date(car.dateTime);
-            return carDate >= start && carDate <= end;
-        }, reportCarList); // Pass reportCarList for displaying report cars
-        reportModal.style.display = 'block';
-    });
-
-    todayReportBtn.addEventListener('click', () => {
-        const today = new Date().toDateString();
-        loadRegisteredCars(car => {
-            const carDate = new Date(car.dateTime).toDateString();
-            return carDate === today;
-        }, todayCarList); // Pass todayCarList for displaying today's cars
-        todayModal.style.display = 'block';
-    });
-
-    closeModal.addEventListener('click', () => {
-        carDetailsModal.style.display = 'none';
-    });
-
-    closeReportModal.addEventListener('click', () => {
-        reportModal.style.display = 'none';
-    });
-
-    closeTodayModal.addEventListener('click', () => {
-        todayModal.style.display = 'none';
-    });
-
-    function saveCarToLocalStorage(car) {
-        const cars = JSON.parse(localStorage.getItem('registeredCars')) || [];
-        cars.push(car);
-        localStorage.setItem('registeredCars', JSON.stringify(cars));
     }
 
-    function loadRegisteredCars(filterFn = () => true, listElement = carList) {
-        listElement.innerHTML = ''; // Clear the list before loading
-        const cars = JSON.parse(localStorage.getItem('registeredCars')) || [];
-        cars.filter(filterFn).forEach(car => displayCar(car, listElement));
+    deleteModalBtn.addEventListener("click", () => {
+        if (selectedVehicle) {
+            vehicles = vehicles.filter(v => v !== selectedVehicle);
+            saveVehicles();
+            renderVehicleList();
+            carDetailsModal.style.display = "none";
+        }
+    });
+
+    closeModalBtn.onclick = () => carDetailsModal.style.display = "none";
+    closeReportModal.onclick = () => reportModal.style.display = "none";
+    closeTodayModal.onclick = () => todayModal.style.display = "none";
+    closeTempModal.onclick = () => tempModal.style.display = "none";
+    document.getElementById("logo").addEventListener("click", () => {
+        tempModal.style.display = "block";
+    });
+
+    function registerVehicle(event) {
+        event.preventDefault();
+        const vehicleType = document.getElementById("vehicleType").value;
+        const vehicleNumber = document.getElementById("vehicleNumber").value;
+        const ownerName = document.getElementById("ownerName").value;
+        const carModel = document.getElementById("carModel").value;
+        const contactNumber = document.getElementById("contactNumber").value;
+        const date = formatDate(new Date());  // Includes date and time in the required format
+
+        const newVehicle = { vehicleType, vehicleNumber, ownerName, carModel, contactNumber, date };
+        vehicles.push(newVehicle);
+        saveVehicles();
+        carForm.reset();
+        renderVehicleList();
+
+        // Show registration success message based on owner's name
+        if (ownerName) {
+            alert(`Hi ${ownerName}, your vehicle is registered successfully.`);
+        } else {
+            alert("Hey there, your vehicle is registered successfully.");
+        }
     }
 
-    function displayCar(car, listElement) {
-        const listItem = document.createElement('li');
-        listItem.classList.add('car-item');
+    carForm.addEventListener("submit", registerVehicle);
+    clearAllBtn.addEventListener("click", () => {
+        authModal.style.display = "block"; // Show authentication modal for clearing all
+        passcodeInput.value = ""; // Clear previous input
+    });
 
-        const vehicleNumber = document.createElement('span');
-        vehicleNumber.textContent = car.vehicleNumber;
-        vehicleNumber.classList.add('vehicle-number');
-        vehicleNumber.onclick = () => {
-            modalVehicleNumber.textContent = car.vehicleNumber;
-            modalCarDetails.innerHTML = `
-                <strong>Type:</strong> ${car.vehicleType} <br>
-                <strong>Owner:</strong> ${car.ownerName || "N/A"} <br>
-                <strong>Model:</strong> ${car.carModel || "N/A"} <br>
-                <strong>Contact:</strong> ${car.contactNumber || "N/A"} <br>
-                <small><em>Registered on:</em> ${car.dateTime}</small>
-            `;
-            carDetailsModal.style.display = 'block'; // Show car details modal
-        };
+    viewReportBtn.addEventListener("click", viewReport); // No authentication needed for viewing report
 
-        const deleteBtn = document.createElement('button');
-        deleteBtn.textContent = 'Delete';
-        deleteBtn.classList.add('delete-btn');
-        deleteBtn.onclick = () => {
-            removeCarFromLocalStorage(car.vehicleNumber);
-            listElement.removeChild(listItem); // Remove the car from the list
-        };
+    todayReportBtn.addEventListener("click", () => {
+        todayCarList.innerHTML = "";
+        const today = new Date().toLocaleDateString('en-CA'); // Use 'en-CA' for the correct format
+        const todayVehicles = vehicles.filter(vehicle => vehicle.date.startsWith(today));
+        todayVehicles.forEach(vehicle => {
+            const li = document.createElement("li");
+            li.textContent = `${vehicle.vehicleNumber} - ${vehicle.date}`;
+            li.addEventListener("click", () => showVehicleDetails(vehicle));
+            todayCarList.appendChild(li);
+        });
+        todayModal.style.display = "block";
+    });
 
-        listItem.appendChild(vehicleNumber);
-        listItem.appendChild(deleteBtn);
-        listElement.appendChild(listItem); // Append the list item to the correct list
-    }
+    submitPasscodeBtn.addEventListener("click", () => {
+        if (selectedVehicle) {
+            authenticate("viewDetails");
+        } else {
+            const passcode = passcodeInput.value;
+            if (passcode === '000000') {
+                vehicles = []; // Clear all vehicles
+                saveVehicles(); // Update local storage
+                renderVehicleList(); // Re-render vehicle list to show it's empty
+                authModal.style.display = "none"; // Close the authentication modal
+                alert('All vehicles have been cleared.'); // Inform the user
+            } else {
+                authMessage.style.display = "block"; // Show error message
+            }
+        }
+    });
 
-    function removeCarFromLocalStorage(vehicleNumber) {
-        const cars = JSON.parse(localStorage.getItem('registeredCars')) || [];
-        const updatedCars = cars.filter(car => car.vehicleNumber !== vehicleNumber);
-        localStorage.setItem('registeredCars', JSON.stringify(updatedCars));
-    }
+    renderVehicleList(); // Initial render
 });
