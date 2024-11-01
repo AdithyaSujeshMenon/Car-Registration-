@@ -8,9 +8,9 @@
 </head>
 <body>
     <div class="container">
-        <img src="IMG_0694.jpeg" />
+        <img src="pess1.jpeg" id="logo" class="logo" alt="Pess Logo" />
         <h2>Register Your Vehicle</h2>
-        
+
         <form id="carForm">
             <div class="form-group">
                 <label for="vehicleType">Vehicle Type:</label>
@@ -31,11 +31,11 @@
                 <input type="text" id="ownerName" name="ownerName" placeholder="e.g., John Doe">
             </div>
             <div class="form-group">
-                <label for="carModel">Vehicle Model (Optional):</label>
+                <label for="carModel">Car Model (Optional):</label>
                 <input type="text" id="carModel" name="carModel" placeholder="e.g., Toyota Corolla">
             </div>
             <div class="form-group">
-                <label for="contactNumber">Contact Information (Optional):</label>
+                <label for="contactNumber">Contact Number (Optional):</label>
                 <input type="text" id="contactNumber" name="contactNumber" placeholder="e.g., +1234567890">
             </div>
             <button type="submit" class="register-btn">Register Vehicle</button>
@@ -43,7 +43,7 @@
         </form>
 
         <div class="report-section">
-            <h2>View Reports(N/a)</h2>
+            <h2>View Reports</h2>
             <div class="form-group">
                 <label for="startDate">Start Date:</label>
                 <input type="date" id="startDate" name="startDate">
@@ -58,6 +58,7 @@
 
         <h2>Registered Vehicles</h2>
         <ul id="carList" class="scrollable"></ul>
+        <div id="paginationControls" class="scrollable-horizontal"></div>
     </div>
 
     <!-- Modal for Vehicle Details -->
@@ -76,7 +77,6 @@
             <span class="close-modal" id="closeReportModal">&times;</span>
             <h2>Report from <span id="reportDateRange"></span></h2>
             <ul id="reportCarList" class="scrollable"></ul>
-            <button id="closeReportList" class="close-btn">Close</button>
         </div>
     </div>
 
@@ -86,7 +86,27 @@
             <span class="close-modal" id="closeTodayModal">&times;</span>
             <h2>Today's Registrations</h2>
             <ul id="todayCarList" class="scrollable"></ul>
-            <button id="closeTodayList" class="close-btn">Close</button>
+        </div>
+    </div>
+
+    <!-- Modal for Authentication -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeAuthModal">&times;</span>
+            <h2>Authentication Required</h2>
+            <input type="password" id="passcodeInput" placeholder="Enter Passcode" maxlength="6">
+            <button id="submitPasscodeBtn">Submit</button>
+            <div id="authMessage" style="color: red; display: none;">Incorrect Passcode. Please try again.</div>
+        </div>
+    </div>
+
+    <!-- Modal for Temporary Registration Info -->
+    <div id="tempModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeTempModal">&times;</span>
+            <h2>Temporary Vehicle Registration Point</h2>
+            <p>This is a temporary registration point supporting server issues on <a href="https://pessuk.com" target="_blank">pessuk.com</a>.</p>
+            <p>Made by <strong>Adithya Sujesh Menon</strong></p>
         </div>
     </div>
 
