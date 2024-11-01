@@ -4,6 +4,7 @@
     padding: 0;
     box-sizing: border-box;
     font-family: Arial, sans-serif;
+    background-color: 
 }
 
 body {
@@ -62,9 +63,9 @@ input, select {
     margin-top: 10px;
 }
 
-.register-btn { background-color: #28a745; color: white; }
-.clear-btn { background-color: #dc3545; color: white; }
-.report-btn { background-color: #007bff; color: white; }
+.register-btn { background-color: #00a1d8; color: #ffffff; }
+.clear-btn { background-color: #e22400; color: white; }
+.report-btn { background-color: #5e30eb; color: white; }
 
 .report-section {
     margin-top: 20px;
